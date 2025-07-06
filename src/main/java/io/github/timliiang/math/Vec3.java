@@ -25,6 +25,10 @@ public class Vec3 {
         return new Vec3(this.x * s, this.y * s, this.z * s);
     }
 
+    public static Vec3 lerp(Vec3 v1, Vec3 v2, float a) {
+        return add(v1.scale(1 - a), v2.scale(a));
+    }
+
     public void print() {
         System.out.println("x: " + this.x + ", y: " + this.y + ", z: " + this.z);
     }
