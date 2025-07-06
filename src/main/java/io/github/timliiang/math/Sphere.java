@@ -2,7 +2,6 @@ package io.github.timliiang.math;
 
 import java.util.Optional;
 
-import io.github.timliiang.math.*;
 import io.github.timliiang.scene.Color;
 
 public class Sphere {

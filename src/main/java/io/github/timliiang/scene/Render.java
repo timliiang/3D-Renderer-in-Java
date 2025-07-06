@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import io.github.timliiang.App;
 import io.github.timliiang.gui.*;
 import io.github.timliiang.math.*;
-import io.github.timliiang.scene.*;
 
 public class Render {
     private static int WIDTH = App.WIDTH;
@@ -26,11 +25,11 @@ public class Render {
                 new Color(1f, 0f, 0f)),
             new Sphere(
                 new Vec3(70f, 50f, 60f), 
-                50f,
+                20f,
                 new Color(0f, 1f, 0f)),
             new Sphere(
-                new Vec3(120f, 70f, 100f), 
-                60f,
+                new Vec3(-50f, 20f, 100f), 
+                30f,
                 new Color(0f, 0f, 1f))
         };
 

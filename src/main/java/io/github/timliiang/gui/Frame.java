@@ -5,12 +5,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 public class Frame extends JFrame implements MouseMotionListener {
-    private int width;
-    private int height;
 
     public Frame(int width, int height) {
-        this.width = width;
-        this.height = height;
         this.setTitle("Ray tracing");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
