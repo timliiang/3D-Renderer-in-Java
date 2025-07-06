@@ -3,9 +3,9 @@ package io.github.timliiang;
 import io.github.timliiang.math.*;
 import io.github.timliiang.scene.*;
 
-import javax.swing.*;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
+
+import javax.swing.*;
 
 /**
  * Hello world!
@@ -17,7 +17,7 @@ public class App {
 
     public static void main( String[] args ) {
 
-        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 
         JFrame frame = new JFrame();
         frame.setSize(WIDTH, HEIGHT);
@@ -27,12 +27,27 @@ public class App {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 1:0.75 is aspect ratio 4:3
-        // for 1920 x 1080, switch to 16:9 or 1:0.5625
+        // for 1920 x 1080, switch to 16:9
+
+        Sphere sphere1 = new Sphere(
+            new Vec3(30f, 30f, 20f), 
+            20f,
+            new Color(1f, 0f, 0f));
+        Sphere sphere2 = new Sphere(
+            new Vec3(70f, 50f, 60f), 
+            50f,
+            new Color(0f, 1f, 1f));
+        Sphere sphere3 = new Sphere(
+            new Vec3(120f, 70f, 100f), 
+            60f,
+            new Color(0f, 0f, 1f));
+
+        // Screen
         Vec3 x1 = new Vec3(1f, 0.75f, 0f);
         Vec3 x2 = new Vec3(-1f, 0.75f, 0f);
         Vec3 x3 = new Vec3(1f, -0.75f, 0f);
         Vec3 x4 = new Vec3(-1f, -0.75f, 0f);
-        
+
         Vec3 c = new Vec3(0f, 0f, -1f); 
 
         for (int x = 0; x < WIDTH; x++) {
@@ -44,7 +59,7 @@ public class App {
                 Vec3 p = Vec3.add(t.scale(1 - beta), b.scale(beta));
                 Ray ray = new Ray(p, Vec3.sub(p, c));
 
-                image.setRGB(x, (HEIGHT - 1 - y), new Color(x, y, 100).getRGB());
+                image.setRGB(x, (HEIGHT - 1 - y), new Color(x / 255f, y / 255f, 100 / 255f).getRGB());
             }
         }
 

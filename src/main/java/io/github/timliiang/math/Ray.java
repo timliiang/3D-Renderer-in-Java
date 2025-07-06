@@ -1,6 +1,4 @@
-package io.github.timliiang.scene;
-
-import io.github.timliiang.math.Vec3;
+package io.github.timliiang.math;
 
 public class Ray {
     public Vec3 origin, direction;
