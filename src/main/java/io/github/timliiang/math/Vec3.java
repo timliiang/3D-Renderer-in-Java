@@ -18,7 +18,7 @@ public class Vec3 {
     }
 
     public static Vec3 sub(Vec3 v1, Vec3 v2) {
-        return new Vec3(v2.x - v1.x, v2.y - v1.y, v2.z - v1.z);
+        return new Vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
     }
 
     public Vec3 scale(float s) {
@@ -27,6 +27,10 @@ public class Vec3 {
 
     public static Vec3 lerp(Vec3 v1, Vec3 v2, float a) {
         return add(v1.scale(1 - a), v2.scale(a));
+    }
+
+    public static float dot(Vec3 v1, Vec3 v2) {
+        return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     }
 
     public void print() {
