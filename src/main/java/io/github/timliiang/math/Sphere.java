@@ -2,17 +2,18 @@ package io.github.timliiang.math;
 
 import java.util.Optional;
 
-import io.github.timliiang.scene.Color;
+import io.github.timliiang.scene.Material;
+import io.github.timliiang.scene.SceneObject;
 
-public class Sphere {
+public class Sphere implements SceneObject {
     private Vec3 center;
     private float radius;
-    private Color color;
+    private Material material;
 
-    public Sphere(Vec3 center, float radius, Color color) {
+    public Sphere(Vec3 center, float radius, Material material) {
         this.center = center;
         this.radius = radius;
-        this.color = color;
+        this.material = material;
     }
 
     public Vec3 getCenter() {
@@ -23,13 +24,14 @@ public class Sphere {
         return this.radius;
     }
 
-    public Color getColor() {
-        return this.color;
+    public Material getMaterial() {
+        return this.material;
     }
 
     /*
      * @param r is a Ray object
      */
+    @Override
     public Optional<Float> intersection(Ray r) {
         Vec3 d = r.getDirection();
         Vec3 o = r.getOrigin();

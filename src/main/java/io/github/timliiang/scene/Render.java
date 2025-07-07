@@ -17,20 +17,52 @@ public class Render {
     public static void render() {
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Frame frame = new Frame(WIDTH, HEIGHT);
+        Color ambient = new Color(1f, 1f, 1f); // ambient intensity
 
-        Sphere[] arr = {
+        Material redMat = new Material(
+            new Color(0f, 0f, 0f),
+            new Color(1f, 0f, 0f),
+            new Color(1f, 1f, 1f),
+            0.8f
+        );
+        Material blueMat = new Material(
+            new Color(0f, 0f, 0f),
+            new Color(0f, 0f, 1f),
+            new Color(1f, 1f, 1f),
+            0.8f
+        );
+        Material greenMat = new Material(
+            new Color(0f, 0f, 0f),
+            new Color(0f, 1f, 0f),
+            new Color(1f, 1f, 1f),
+            0.8f
+        );
+
+        Sphere[] spheres = {
             new Sphere(
                 new Vec3(0f, 0f, 20f), 
                 10f,
-                new Color(1f, 0f, 0f)),
+                redMat),
             new Sphere(
-                new Vec3(70f, 50f, 60f), 
-                20f,
-                new Color(0f, 1f, 0f)),
+                new Vec3(25f, 0f, 30f), 
+                2f,
+                greenMat),
             new Sphere(
                 new Vec3(-50f, 20f, 100f), 
                 30f,
-                new Color(0f, 0f, 1f))
+                blueMat)
+        };
+
+        Light[] lights = {
+            new Light(
+                new Vec3(20f, 30f, 30f),
+                new Color(1f, 0.7f, 1f),
+                new Color(1f, 1f,1f)),
+            new Light(
+                new Vec3(-55f, 30f, 90f),
+                new Color(1f, 1f, 0.6f),
+                new Color(1f, 1f,1f)
+            )
         };
 
         
@@ -54,11 +86,11 @@ public class Render {
                 Color color = new Color(0f, 0f, 0f);
                 Float smallest = Float.NaN;
 
-                for (int s = 0; s < arr.length; s++) {
-                    Optional<Float> opt = arr[s].intersection(ray);
+                for (int s = 0; s < spheres.length; s++) {
+                    Optional<Float> opt = spheres[s].intersection(ray);
                     if (opt.isPresent() && (smallest.isNaN() || opt.get() < smallest)) {
                         smallest = opt.get();
-                        color = arr[s].getColor();
+                        color = spheres[s].getMaterial().getDiffuse();
                     }
                 }
 
