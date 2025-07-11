@@ -21,7 +21,7 @@ public class Frame extends JFrame implements MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        System.out.println("x: " + e.getX() + ", y: " + e.getY());
+        //System.out.println("x: " + e.getX() + ", y: " + e.getY());
     }
     
 }

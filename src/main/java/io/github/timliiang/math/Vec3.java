@@ -33,6 +33,10 @@ public class Vec3 {
         return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     }
 
+    public Vec3 normalize() {
+        return this.scale(1 / (float) Math.sqrt(Vec3.dot(this, this)));
+    }
+
     public void print() {
         System.out.println("x: " + this.x + ", y: " + this.y + ", z: " + this.z);
     }

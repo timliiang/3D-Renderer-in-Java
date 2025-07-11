@@ -17,40 +17,36 @@ public class Render {
     public static void render() {
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Frame frame = new Frame(WIDTH, HEIGHT);
-        Color ambient = new Color(1f, 1f, 1f); // ambient intensity
-
-        Material redMat = new Material(
-            new Color(0f, 0f, 0f),
-            new Color(1f, 0f, 0f),
-            new Color(1f, 1f, 1f),
-            0.8f
-        );
-        Material blueMat = new Material(
-            new Color(0f, 0f, 0f),
-            new Color(0f, 0f, 1f),
-            new Color(1f, 1f, 1f),
-            0.8f
-        );
-        Material greenMat = new Material(
-            new Color(0f, 0f, 0f),
-            new Color(0f, 1f, 0f),
-            new Color(1f, 1f, 1f),
-            0.8f
-        );
+        Color ambient = new Color(0.5f, 0.5f, 0.5f); // i_a, ambient intensity
 
         Sphere[] spheres = {
             new Sphere(
-                new Vec3(0f, 0f, 20f), 
-                10f,
-                redMat),
+                new Vec3(0f, 0f, -1.2f), 
+                0.4f,
+                new Material(
+                    new Color(0.204f, 0.1f, 0f),
+                    new Color(0.8f, 0.4f, 0f),
+                    new Color(1f, 1f, 1f),
+                    80
+            )),
             new Sphere(
-                new Vec3(25f, 0f, 30f), 
-                2f,
-                greenMat),
+                new Vec3(-1f, 0f, -0.8f), 
+                0.2f,
+                new Material(
+                    new Color(0f, 0f, 0f),
+                    new Color(0f, 0f, 1f),
+                    new Color(1f, 1f, 1f),
+                    25
+            )),
             new Sphere(
-                new Vec3(-50f, 20f, 100f), 
-                30f,
-                blueMat)
+                new Vec3(1f, 0f, -0.8f), 
+                0.2f,
+                new Material(
+                    new Color(0f, 0f, 0f),
+                    new Color(0f, 1f, 0f),
+                    new Color(1f, 1f, 1f),
+                    50
+            ))
         };
 
         Light[] lights = {
@@ -84,18 +80,50 @@ public class Render {
                 Ray ray = new Ray(p, Vec3.sub(p, c));
 
                 Color color = new Color(0f, 0f, 0f);
-                Float smallest = Float.NaN;
+                Float smallestT = Float.NaN;
+                Sphere smallestSphere = null;
+                Material smallestMat = null;
 
                 for (int s = 0; s < spheres.length; s++) {
                     Optional<Float> opt = spheres[s].intersection(ray);
-                    if (opt.isPresent() && (smallest.isNaN() || opt.get() < smallest)) {
-                        smallest = opt.get();
-                        color = spheres[s].getMaterial().getDiffuse();
+                    if (opt.isPresent() && (smallestT.isNaN() || opt.get() < smallestT)) {
+                        smallestT = opt.get();
+                        smallestSphere = spheres[s];
                     }
                 }
 
-                //image.setRGB(x, (HEIGHT - 1 - y), new Color((float) x / WIDTH, (float) y / HEIGHT, 100 / 255f).getRGB());
-                image.setRGB(x, y, color.getRGB());
+                // proj 3 step 4
+                if (!smallestT.isNaN()) {
+                    smallestMat = smallestSphere.getMaterial();
+                    Vec3 pSphere = Vec3.add(ray.getOrigin(), ray.getDirection().scale(smallestT));
+                    Vec3 surfNorm = Vec3.sub(pSphere, smallestSphere.getCenter()).normalize();
+                    //color = Color.multiply(smallestMat.getAmbient(), ambient);
+                    Color diffuseComp = null;
+                    Color specComp = null;
+                    for (int i = 0; i < lights.length; i++) {
+                        Vec3 lightVec = Vec3.sub(lights[i].getLocation(), pSphere).normalize();
+                        float temp = Vec3.dot(surfNorm, lightVec);
+                        System.out.println(temp);
+                        if (temp < 0) continue;
+                        diffuseComp = Color.multiply(smallestMat.getDiffuse(), lights[i].getDiffuse()).scale(temp);
+                        Vec3 reflVec = Vec3.sub(surfNorm.scale(2 * temp), lightVec);
+                        Vec3 viewVec = Vec3.sub(c, pSphere).normalize();
+                        specComp = Color.multiply(
+                            smallestMat.getSpecular(), 
+                            lights[i].getSpecular()).scale(
+                                (float) Math.pow(
+                                    Vec3.dot(viewVec, reflVec), 
+                                    smallestMat.getShininess()));
+                        //color = Color.add(color, diffuseComp);
+                        //color = Color.add(color, specComp);
+                        color.clamp();
+                    }
+                    color = smallestMat.getAmbient();
+                }
+
+
+                image.setRGB(x, (HEIGHT - 1 - y), new Color((float) x / WIDTH, (float) y / HEIGHT, 100 / 255f).getRGB());
+                //image.setRGB(x, y, color.getRGB());
             }
         }
 

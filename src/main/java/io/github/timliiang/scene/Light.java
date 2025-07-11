@@ -4,8 +4,8 @@ import io.github.timliiang.math.Vec3;
 
 public class Light {
     private Vec3 location; // location in world 
-    private Color diffuse; // diffuse intensity
-    private Color specular; // specular intensity
+    private Color diffuse; // i_d, diffuse intensity
+    private Color specular; // i_s, specular intensity
 
     public Light(Vec3 location, Color diffuse, Color specular) {
         this.location = location;
