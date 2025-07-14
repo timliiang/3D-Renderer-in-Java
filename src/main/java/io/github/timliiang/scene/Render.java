@@ -33,16 +33,16 @@ public class Render {
                 new Vec3(25f, 0f, 30f), 
                 2f,
                 new Material(
-                    new Color(0.07f, 0.07f, 0.07f),
+                    new Color(0.07f, 0.205f, 0.7f),
                     new Color(0f, 0f, 1f),
                     new Color(1f, 1f, 1f),
-                    25
+                    85
             )),
             new Sphere(
-                new Vec3(-50f, 20f, 100f), 
-                30,
+                new Vec3(-20f, 20f, 50f), //-50, 20, 100
+                10,
                 new Material(
-                    new Color(0.07f, 0.07f, 0.07f),
+                    new Color(0.07f, 0.8f, 0.07f),
                     new Color(0f, 1f, 0f),
                     new Color(1f, 1f, 1f),
                     50
@@ -51,14 +51,14 @@ public class Render {
 
         Light[] lights = {
             new Light(
-                new Vec3(20f, 30f, 30f),
-                new Color(0.5f, 0.4f, 1f),    // warm orange/yellow diffuse
-                new Color(1f, 0.95f, 0.8f)    // warm specular
+                new Vec3(30f, 40f, 70f),
+                new Color(0.6f, 0.8f, 0.8f),    // warm orange/yellow diffuse
+                new Color(0.8f, 0.9f, 1f)    // warm specular
             ),
             new Light(
                 new Vec3(-55f, 30f, 90f),
-                new Color(0.6f, 0.8f, 0.8f),   // cool blue diffuse
-                new Color(0.8f, 0.9f, 1f)    // cool specular
+                new Color(0.6f, 0.8f, 0.8f),
+                new Color(0.8f, 0.9f, 1f)
             )
         };
 
@@ -70,7 +70,6 @@ public class Render {
         Vec3 x4 = new Vec3(-1f, -0.75f, 0f);
 
         Vec3 c = new Vec3(0f, 0f, -1f); 
-
         
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
