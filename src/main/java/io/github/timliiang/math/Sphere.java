@@ -35,11 +35,11 @@ public class Sphere implements SceneObject {
     public Optional<Float> intersection(Ray r) {
         Vec3 d = r.getDirection();
         Vec3 o = r.getOrigin();
-        Vec3 cPrime = Vec3.sub(o, center);
+        Vec3 cPrime = o.sub(center);
 
-        float a = Vec3.dot(d, d);
-        float b = Vec3.dot(cPrime, d) * 2;
-        float c = Vec3.dot(cPrime, cPrime) - radius * radius;
+        float a = d.dot(d);
+        float b = cPrime.dot(d) * 2;
+        float c = cPrime.dot(cPrime) - radius * radius;
 
         float discriminant = b * b - 4 * a * c;
         if (discriminant < 0) {

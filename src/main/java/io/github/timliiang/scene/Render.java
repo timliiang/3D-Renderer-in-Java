@@ -39,8 +39,8 @@ public class Render {
                     85
             )),
             new Sphere(
-                new Vec3(-20f, 20f, 50f), //-50, 20, 100
-                10,
+                new Vec3(-35f, 20f, 50f), //-50, 20, 100
+                9f,
                 new Material(
                     new Color(0.07f, 0.8f, 0.07f),
                     new Color(0f, 1f, 0f),
@@ -78,7 +78,7 @@ public class Render {
                 Vec3 t = Vec3.lerp(x1, x2, alpha);
                 Vec3 b = Vec3.lerp(x3, x4, alpha);
                 Vec3 p = Vec3.lerp(t, b, beta);
-                Ray ray = new Ray(p, Vec3.sub(p, c));
+                Ray ray = new Ray(p, p.sub(c));
 
                 Color color = new Color(0f, 0f, 0f);
                 Float smallestT = Float.NaN;
@@ -96,23 +96,23 @@ public class Render {
                 // proj 3 step 4
                 if (!smallestT.isNaN()) {
                     smallestMat = smallestSphere.getMaterial();
-                    Vec3 pSphere = Vec3.add(ray.getOrigin(), ray.getDirection().scale(smallestT));
-                    Vec3 surfNorm = Vec3.sub(pSphere, smallestSphere.getCenter()).normalize();
+                    Vec3 pSphere = ray.getOrigin().add(ray.getDirection().scale(smallestT));
+                    Vec3 surfNorm = pSphere.sub(smallestSphere.getCenter()).normalize();
                     color = Color.multiply(smallestMat.getAmbient(), ambient);
                     Color diffuseComp = null;
                     Color specComp = null;
                     for (int i = 0; i < lights.length; i++) {
-                        Vec3 lightVec = Vec3.sub(lights[i].getLocation(), pSphere).normalize();
-                        float temp = Vec3.dot(surfNorm, lightVec);
+                        Vec3 lightVec = lights[i].getLocation().sub(pSphere).normalize();
+                        float temp = surfNorm.dot(lightVec);
                         if (temp < 0) continue;
                         diffuseComp = Color.multiply(smallestMat.getDiffuse(), lights[i].getDiffuse()).scale(temp);
-                        Vec3 reflVec = Vec3.sub(surfNorm.scale(2 * temp), lightVec);
-                        Vec3 viewVec = Vec3.sub(c, pSphere).normalize();
+                        Vec3 reflVec = surfNorm.scale(2 * temp).sub(lightVec);
+                        Vec3 viewVec = c.sub(pSphere).normalize();
                         specComp = Color.multiply(
                             smallestMat.getSpecular(), 
                             lights[i].getSpecular()).scale(
                                 (float) Math.pow(
-                                    Vec3.dot(viewVec, reflVec), 
+                                    viewVec.dot(reflVec), 
                                     smallestMat.getShininess()));
                         color = Color.add(color, diffuseComp);
                         color = Color.add(color, specComp);
