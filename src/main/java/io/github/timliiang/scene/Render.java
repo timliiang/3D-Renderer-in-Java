@@ -32,7 +32,8 @@ public class Render {
                 new Color(0.204f, 0.1f, 0f),
                 new Color(0.8f, 0.4f, 0f),
                 new Color(1f, 1f, 1f),
-                80
+                80,
+                new Color(0.1f, 0.2f, 0.3f)
         )),
         new Sphere(
             new Vec3(15f, 0f, 20f), 
@@ -41,7 +42,8 @@ public class Render {
                 new Color(0.07f, 0.205f, 0.7f),
                 new Color(0.8f, 0.4f, 0f),
                 new Color(1f, 1f, 1f),
-                80
+                80,
+                new Color(0.1f, 0.2f, 0.3f)
         )),
         new Sphere(
             new Vec3(-12f, 6f, 20f),
@@ -50,7 +52,8 @@ public class Render {
                 new Color(0.07f, 0.8f, 0.07f),
                 new Color(0.8f, 0.4f, 0f),
                 new Color(1f, 1f, 1f),
-                50
+                50,
+                new Color(0.1f, 0.1f, 0.1f)
         )),
         new Sphere(
             new Vec3(22.5f, 20f, 25f),
@@ -59,7 +62,8 @@ public class Render {
                 new Color(0.07f, 0.8f, 0.07f),
                 new Color(0.8f, 0.4f, 0f),
                 new Color(1f, 1f, 1f),
-                50
+                50,
+                new Color(0f, 0f, 0f)
         ))
     };
 
@@ -131,7 +135,7 @@ public class Render {
                 if (!smallestT.isNaN()) {
 
                     // Phong's Illumination Model
-                    color = rayColor(smallestT, smallestSphere, ray);
+                    color = rayColor(smallestT, smallestSphere, ray, 3);
                 }
                 
                 // Paint pixel
@@ -144,8 +148,9 @@ public class Render {
      * This method determines the color of a ray by using Phong's Illumination Model.
      *  The color consists of three components being Ambient, Diffuse, and Specular.
      * 
+     * @param depth, recursion depth
      */
-    public static Color rayColor(Float t, Sphere sphere, Ray ray) {
+    public static Color rayColor(Float t, Sphere sphere, Ray ray, int depth) {
         Material smallestMat = sphere.getMaterial();
         Vec3 pSphere = ray.getOrigin().add(ray.getDirection().scale(t));
         Vec3 surfNorm = pSphere.sub(sphere.getCenter()).normalize();
@@ -153,6 +158,16 @@ public class Render {
         Color color = Color.multiply(smallestMat.getAmbient(), AMBIENT);
         Color diffuseComp = null;
         Color specComp = null;
+
+        // For reflection
+        if (depth != 0) {
+            Vec3 reflVecV = ray.getDirection().scale(-1).normalize();
+            Vec3 reflVecR = surfNorm.scale(surfNorm.dot(reflVecV) * 2).sub(reflVecV);
+            Ray reflectRay = new Ray(pSphere, reflVecR);
+            Color reflectColor = rayColor(t, sphere, reflectRay, depth - 1);
+            reflectColor = Color.multiply(reflectColor, smallestMat.getReflectivity());
+            color = color.add(reflectColor);
+        }
 
         for (int i = 0; i < lights.length; i++) {
             // Check if in shadow, if it is then dont add diffuse and specular values

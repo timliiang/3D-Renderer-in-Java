@@ -5,12 +5,14 @@ public class Material {
     private Color diffuse; // k_d, diffuse constant, percentage of diffuse light the material reflects
     private Color specular; // k_s, specular constant, percentage of specular light the material reflects
     private int shininess; // alpha, shininess factor, higher value means shinier material
+    private Color reflectivity; // k_r, reflectivity of a material. If reflectivity is high then set diffuse for simulation
 
-    public Material(Color ambient, Color diffuse, Color specular, int shininess) {
+    public Material(Color ambient, Color diffuse, Color specular, int shininess, Color reflectivity) {
         this.ambient = ambient;
         this.diffuse = diffuse;
         this.specular = specular;
         this.shininess = shininess;
+        this.reflectivity = reflectivity;
     }
 
     public Color getAmbient() {
@@ -44,5 +46,14 @@ public class Material {
     public void setShininess(int shininess) {
         this.shininess = shininess;
     }
+
+    public Color getReflectivity() {
+        return this.reflectivity;
+    }
+
+    public void setReflectivity(Color reflectivity) {
+        this.reflectivity = reflectivity;
+    }
+
 
 }
