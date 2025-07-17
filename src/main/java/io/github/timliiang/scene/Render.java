@@ -21,8 +21,8 @@ public class Render {
 
         Sphere[] spheres = {
             new Sphere(
-                new Vec3(0f, 0f, 20f), 
-                10f,
+                new Vec3(0f, 0f, 10f), 
+                2f,
                 new Material(
                     new Color(0.204f, 0.1f, 0f),
                     new Color(0.8f, 0.4f, 0f),
@@ -30,20 +30,20 @@ public class Render {
                     80
             )),
             new Sphere(
-                new Vec3(25f, 0f, 30f), 
-                2f,
+                new Vec3(15f, 0f, 20f), 
+                3f,
                 new Material(
                     new Color(0.07f, 0.205f, 0.7f),
-                    new Color(0f, 0f, 1f),
+                    new Color(0.8f, 0.4f, 0f),
                     new Color(1f, 1f, 1f),
-                    85
+                    80
             )),
             new Sphere(
-                new Vec3(-35f, 20f, 50f), //-50, 20, 100
-                9f,
+                new Vec3(-12f, 6f, 20f), //-50, 20, 100
+                5f,
                 new Material(
                     new Color(0.07f, 0.8f, 0.07f),
-                    new Color(0f, 1f, 0f),
+                    new Color(0.8f, 0.4f, 0f),
                     new Color(1f, 1f, 1f),
                     50
             ))
@@ -51,12 +51,12 @@ public class Render {
 
         Light[] lights = {
             new Light(
-                new Vec3(30f, 40f, 70f),
+                new Vec3(30f, 40f, 30f),
                 new Color(0.6f, 0.8f, 0.8f),    // warm orange/yellow diffuse
                 new Color(0.8f, 0.9f, 1f)    // warm specular
             ),
             new Light(
-                new Vec3(-55f, 30f, 90f),
+                new Vec3(-100f, 60f, -30f),
                 new Color(0.6f, 0.8f, 0.8f),
                 new Color(0.8f, 0.9f, 1f)
             )
@@ -80,7 +80,8 @@ public class Render {
                 Vec3 p = Vec3.lerp(t, b, beta);
                 Ray ray = new Ray(p, p.sub(c));
 
-                Color color = new Color(0f, 0f, 0f);
+                Color color = new Color(0f, 0f, 0f); // pixel colour
+
                 Float smallestT = Float.NaN;
                 Sphere smallestSphere = null;
                 Material smallestMat = null;
@@ -108,15 +109,13 @@ public class Render {
                         diffuseComp = Color.multiply(smallestMat.getDiffuse(), lights[i].getDiffuse()).scale(temp);
                         Vec3 reflVec = surfNorm.scale(2 * temp).sub(lightVec);
                         Vec3 viewVec = c.sub(pSphere).normalize();
-                        specComp = Color.multiply(
-                            smallestMat.getSpecular(), 
-                            lights[i].getSpecular()).scale(
+                        specComp = Color.multiply(smallestMat.getSpecular(), lights[i].getSpecular()).scale(
                                 (float) Math.pow(
                                     viewVec.dot(reflVec), 
                                     smallestMat.getShininess()));
-                        color = Color.add(color, diffuseComp);
-                        color = Color.add(color, specComp);
-                        color.clamp();
+                        color = color.add(diffuseComp);
+                        color = color.add(specComp);
+                        color = color.clamp();
                     }
                     
                 }

@@ -17,11 +17,11 @@ public class Color {
         this.b = b;
     }
 
-    public static Color add(Color color1, Color color2) {
+    public Color add(Color color) {
         return new Color(
-            color1.getR() + color2.getR(),
-            color1.getG() + color2.getG(),
-            color1.getB() + color2.getB()
+            this.r + color.r,
+            this.g + color.g,
+            this.b + color.b
         );
     }
 
@@ -40,11 +40,12 @@ public class Color {
     }
 
     public Color clamp() {
-        return new Color(
+        Color temp = new Color(
             r < MIN ? MIN : r > MAX ? MAX : r,
             g < MIN ? MIN : g > MAX ? MAX : g,
             b < MIN ? MIN : b > MAX ? MAX : b
         );
+        return temp;
     }
 
     public int getRGB() {
@@ -82,5 +83,9 @@ public class Color {
 
     public void setB(float b) {
         this.b = b;
+    }
+
+    public void print() {
+        System.out.println("r: " + r + ", g: " + g + ", b: " + b);
     }
 }

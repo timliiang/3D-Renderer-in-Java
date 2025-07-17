@@ -47,8 +47,8 @@ public class Sphere implements SceneObject {
         }
         float sqrtD = (float) Math.sqrt((double)discriminant);
         float t = Math.min(
-                    (-b + sqrtD) / 2 * a,
-                    (-b - sqrtD) / 2 * a);
+                    (-b + sqrtD) / (2 * a),
+                    (-b - sqrtD) / (2 * a));
 
         return (t > 0) ? Optional.of(t) : Optional.empty();
     }
