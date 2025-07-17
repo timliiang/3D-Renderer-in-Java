@@ -54,7 +54,7 @@ public class Render {
         )),
         new Sphere(
             new Vec3(22.5f, 20f, 25f),
-            0f, // 8.72
+            0f, // 10
             new Material(
                 new Color(0.07f, 0.8f, 0.07f),
                 new Color(0.8f, 0.4f, 0f),
@@ -156,7 +156,7 @@ public class Render {
 
         for (int i = 0; i < lights.length; i++) {
             // Check if in shadow, if it is then dont add diffuse and specular values
-            Ray shadow = new Ray(ray.getOrigin(), lights[i].getLocation().sub(ray.getOrigin()));
+            Ray shadow = new Ray(pSphere, lights[i].getLocation().sub(pSphere));
             if (inShadow(shadow, sphere)) continue;
 
             Vec3 lightVec = lights[i].getLocation().sub(pSphere).normalize();
