@@ -44,8 +44,17 @@ public class Render {
                 80
         )),
         new Sphere(
-            new Vec3(-12f, 6f, 20f), //-50, 20, 100
+            new Vec3(-12f, 6f, 20f),
             5f,
+            new Material(
+                new Color(0.07f, 0.8f, 0.07f),
+                new Color(0.8f, 0.4f, 0f),
+                new Color(1f, 1f, 1f),
+                50
+        )),
+        new Sphere(
+            new Vec3(22.5f, 20f, 25f),
+            0f, // 8.72
             new Material(
                 new Color(0.07f, 0.8f, 0.07f),
                 new Color(0.8f, 0.4f, 0f),
@@ -69,7 +78,7 @@ public class Render {
     
 
     /*
-     * 
+     * render :)
      */
     public static void render() {
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -118,8 +127,10 @@ public class Render {
                     }
                 }
 
-                // Phong's Illumination Model
+                // If ray cast has intersection
                 if (!smallestT.isNaN()) {
+
+                    // Phong's Illumination Model
                     color = rayColor(smallestT, smallestSphere, ray);
                 }
                 
@@ -144,6 +155,10 @@ public class Render {
         Color specComp = null;
 
         for (int i = 0; i < lights.length; i++) {
+            // Check if in shadow, if it is then dont add diffuse and specular values
+            Ray shadow = new Ray(ray.getOrigin(), lights[i].getLocation().sub(ray.getOrigin()));
+            if (inShadow(shadow, sphere)) continue;
+
             Vec3 lightVec = lights[i].getLocation().sub(pSphere).normalize();
             float temp = surfNorm.dot(lightVec);
             if (temp < 0) continue;
@@ -170,6 +185,21 @@ public class Render {
         }
 
         return color;
+    }
+
+    /*
+     * shadows
+     */
+    public static boolean inShadow(Ray shadow, Sphere sphere) {
+        for (int s = 0; s < spheres.length; s++) {
+            if (spheres[s] == sphere) continue;
+
+            Optional<Float> t = spheres[s].intersection(shadow);
+            if (t.isPresent() && t.get() < 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
