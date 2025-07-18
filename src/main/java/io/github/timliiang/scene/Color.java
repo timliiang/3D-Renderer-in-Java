@@ -27,9 +27,10 @@ public class Color {
 
     public Color scale(float a) {
         return new Color(
-            this.getR() * a,
-            this.getG() * a,
-            this.getB() * a);
+            this.r * a,
+            this.g * a,
+            this.b * a
+        );
     }
 
     public static Color multiply(Color color1, Color color2) {

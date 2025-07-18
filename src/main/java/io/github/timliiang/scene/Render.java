@@ -16,6 +16,11 @@ public class Render {
 
     private static final Color AMBIENT = new Color(0.5f, 0.5f, 0.5f); // i_a, ambient intensity
     private static Vec3 camera = new Vec3(0f, 0f, -1f);
+    private static final int REFLECTION_DEPTH = 3; // recursive ray tracing depth for reflections
+
+    // For anti-aliasing
+    private static final int SAMPLES_PER_DIRECTION = 3;
+    private static final int SAMPLES = SAMPLES_PER_DIRECTION * SAMPLES_PER_DIRECTION;
 
     private static ImagePlane imagePlane = new ImagePlane(
         new Vec3(1f, 0.75f, 0f),
@@ -88,7 +93,16 @@ public class Render {
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Frame frame = new Frame(WIDTH, HEIGHT);
 
-        tracePixel(image);
+        // loop through each pixel
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                Color color = new Color(0f, 0f, 0f);
+                color = tracePixel(x, y);
+
+                // Paint pixel
+                image.setRGB(x, y, color.getRGB());
+            }
+        }
 
         JLabel label = new JLabel(new ImageIcon(image));
         frame.add(label);
@@ -99,11 +113,20 @@ public class Render {
      * This method traces through each pixel and determines the color based from the ray it casts
      * 
      */
-    public static void tracePixel(BufferedImage image) {
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                float alpha = x / (float)(WIDTH - 1); 
-                float beta = y / (float)(HEIGHT - 1);
+    public static Color tracePixel(int x, int y) {
+        Color sum = new Color(0f, 0f,0f);
+
+        // anti-aliasing
+        for (int aSample = 0; aSample < SAMPLES_PER_DIRECTION; aSample++) {
+            for (int bSample = 0; bSample < SAMPLES_PER_DIRECTION; bSample++) {
+                // background color
+                Color tempColor = new Color(0f, 0f, 0f);
+
+                float alpha = x / (float) WIDTH; 
+                float beta = y / (float) HEIGHT;
+                alpha += aSample * (1 / (float) WIDTH) / SAMPLES_PER_DIRECTION;
+                beta += bSample * (1 / (float) HEIGHT) / SAMPLES_PER_DIRECTION;
+
                 Vec3 t = Vec3.lerp(
                     imagePlane.getX1(), 
                     imagePlane.getX2(), 
@@ -114,10 +137,9 @@ public class Render {
                     imagePlane.getX4(), 
                     alpha
                 );
-                Vec3 p = Vec3.lerp(t, b, beta);
 
+                Vec3 p = Vec3.lerp(t, b, beta);
                 Ray ray = new Ray(p, p.sub(camera));
-                Color color = new Color(0f, 0f, 0f);
 
                 Float smallestT = Float.NaN;
                 Sphere smallestSphere = null;
@@ -133,15 +155,15 @@ public class Render {
 
                 // If ray cast has intersection
                 if (!smallestT.isNaN()) {
-
                     // Phong's Illumination Model
-                    color = rayColor(smallestT, smallestSphere, ray, 3);
+                    tempColor = rayColor(smallestT, smallestSphere, ray, REFLECTION_DEPTH);
                 }
-                
-                // Paint pixel
-                image.setRGB(x, y, color.getRGB());
+
+                // Adding colour for averaging samples -- anti-aliasing
+                sum = sum.add(tempColor);
             }
-        }
+        } // anti-aliasing loop end
+        return sum.scale(1 / (float) SAMPLES);
     }
 
     /*
