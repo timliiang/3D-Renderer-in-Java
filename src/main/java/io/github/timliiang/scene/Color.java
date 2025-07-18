@@ -33,11 +33,12 @@ public class Color {
         );
     }
 
-    public static Color multiply(Color color1, Color color2) {
+    public Color multiply(Color color) {
         return new Color(
-            color1.getR() * color2.getR(),
-            color1.getG() * color2.getG(),
-            color1.getB() * color2.getB());
+            this.r * color.r,
+            this.g * color.g,
+            this.b * color.b 
+        );
     }
 
     public Color clamp() {

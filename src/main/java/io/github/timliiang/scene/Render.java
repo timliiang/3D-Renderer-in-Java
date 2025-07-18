@@ -177,7 +177,7 @@ public class Render {
         Vec3 pSphere = ray.getOrigin().add(ray.getDirection().scale(t));
         Vec3 surfNorm = pSphere.sub(sphere.getCenter()).normalize();
 
-        Color color = Color.multiply(smallestMat.getAmbient(), AMBIENT);
+        Color color = smallestMat.getAmbient().multiply(AMBIENT);
         Color diffuseComp = null;
         Color specComp = null;
 
@@ -187,7 +187,7 @@ public class Render {
             Vec3 reflVecR = surfNorm.scale(surfNorm.dot(reflVecV) * 2).sub(reflVecV);
             Ray reflectRay = new Ray(pSphere, reflVecR);
             Color reflectColor = rayColor(t, sphere, reflectRay, depth - 1);
-            reflectColor = Color.multiply(reflectColor, smallestMat.getReflectivity());
+            reflectColor = reflectColor.multiply(smallestMat.getReflectivity());
             color = color.add(reflectColor);
         }
 
@@ -201,15 +201,12 @@ public class Render {
             if (temp < 0) continue;
 
             // Calculate diffuse component
-            diffuseComp = Color.multiply(smallestMat.getDiffuse(), lights[i].getDiffuse()).scale(temp);
+            diffuseComp = smallestMat.getDiffuse().multiply(lights[i].getDiffuse()).scale(temp);
             Vec3 reflVec = surfNorm.scale(2 * temp).sub(lightVec);
             Vec3 viewVec = camera.sub(pSphere).normalize();
 
             // Calculate specular component
-            specComp = Color.multiply(
-                smallestMat.getSpecular(), 
-                lights[i].getSpecular()
-            );
+            specComp = smallestMat.getSpecular().multiply(lights[i].getSpecular());
             specComp = specComp.scale(
                 (float) Math.pow(
                     viewVec.dot(reflVec), 
